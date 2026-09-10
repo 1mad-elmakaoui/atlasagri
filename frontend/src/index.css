@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { @apply antialiased; }
+  body { @apply bg-ardoise-50 text-ardoise-800; }
+  /* Le tracé MapLibre a besoin de ses styles propres. */
+  .maplibregl-popup-content {
+    @apply rounded-lg border border-ardoise-200 px-3 py-2 text-sm shadow-lg;
+  }
+}
+
+@layer components {
+  .carte-panneau {
+    @apply rounded-lg border border-ardoise-200 bg-white shadow-sm;
+  }
+  .titre-section {
+    @apply text-xs font-semibold uppercase tracking-wider text-ardoise-500;
+  }
+}

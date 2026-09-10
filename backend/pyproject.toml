@@ -1,0 +1,55 @@
+[project]
+name = "atlasagri-backend"
+version = "0.1.0"
+description = "AtlasAgri Intelligence — plateforme de décision pour les chaînes agricoles marocaines"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic[email]>=2.9",
+    "pydantic-settings>=2.6",
+    "sqlalchemy>=2.0.36",
+    "httpx>=0.27",
+    "python-jose[cryptography]>=3.3",
+    "bcrypt>=4.2",
+    "python-multipart>=0.0.12",
+    "anthropic>=0.40",
+    "mcp>=1.1",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.2"]
+dev = ["pytest>=8.3", "pytest-asyncio>=0.24", "ruff>=0.7"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+# Les modules de données de référence déclarent des tables denses — nœuds
+# routiers, seuils par culture, profils de pondération. Les replier sur 100
+# colonnes casserait l'alignement en colonnes qui les rend relisibles d'un coup
+# d'œil, ce qui est précisément l'intérêt de les écrire ainsi.
+[tool.ruff.lint.per-file-ignores]
+"app/domain/morocco.py" = ["E501"]
+"app/domain/crops.py" = ["E501"]
+"app/domain/optimization.py" = ["E501"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    # `Depends(...)` en valeur par défaut est l'idiome FastAPI officiel :
+    # l'appel est évalué une fois à la déclaration, ce que le framework attend.
+    "B008",
+    # `class X(str, Enum)` reste l'idiome le plus sûr avec Pydantic v2.
+    # `StrEnum` modifie le comportement de `str()` et de l'interpolation, ce qui
+    # changerait silencieusement des libellés déjà affichés et journalisés.
+    "UP042",
+]
